@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  db:
+    image: mysql:5.7
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=123
+      - MYSQL_DATABASE=catalogue
+    ports:
+      - "3306:3306"
+    expose:
+      - 3306
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - net
+
+  app:
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    networks:
+      - net
+
+volumes:
+  db:
+
+networks:
+  net:
+    driver: bridge
